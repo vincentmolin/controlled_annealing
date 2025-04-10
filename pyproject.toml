@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name="ideanneal"
+description="Controlled simulated annealing in JAX"
+authors=[
+  {name = "Vincent Molin", email="molinv@chalmers.se"}
+]
+version="0.1"
+license="MIT"
+dependencies = [
+  "jax", "ott-jax", "POT", "scipy", "numpy", "pdmpx @ git+https://github.com/vincentmolin/pdmpx"
+]
+requires-python=">=3"
+
+[project.optional-dependencies]
+dev = [
+  "pytest", "jaxlib"
+]
+paper = [
+  "matplotlib", "tqdm", "mpi4py"
+]
+
+[project.urls]
+Repository = "https://github.com/vincentmolin/ideanneal"
+
+[tool.setuptools.packages.find]
+include = ["ideanneal"]
+
+[tool.ruff]
+ignore = ["E731"]
