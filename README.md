@@ -6,7 +6,7 @@
 Clone, and ```pip install .``` or ```pip install '.[paper]'```
 
 ```
-pip install git+https://github.com/vincentmolin/RRREEEPPPOOO.git
+pip install git+https://github.com/vincentmolin/controlled_annealing.git
 ```
 
 ## Reproducing experiments
