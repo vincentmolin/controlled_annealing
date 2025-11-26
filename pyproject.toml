@@ -22,7 +22,7 @@ requires-python=">=3.10"
 
 [dependency-groups]
 dev = [
-  "pytest", "jaxlib"
+  "pytest", "jaxlib", "flake8"
 ]
 paper = [
   "matplotlib", "tqdm", "mpi4py"
