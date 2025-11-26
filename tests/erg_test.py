@@ -39,13 +39,17 @@ def simulate_pdsa(
 def test_gaussian(nextkey):
     u = lambda x: jnp.sum(x**2, axis=-1) / 2
     pdmp = ControlledPDSA(
-        u, beta=lambda t: 1.0, valid_time=100.0, normalized_velocities=True
+        u,
+        beta=lambda t: 1.0,
+        valid_time=100.0,
+        normalized_velocities=True,
+        refreshment_rate=0.5,
     )
     Tm = 500.0
 
     for N in [1, 5, 10]:
         T = Tm / N
-        print(N)
+        print(f"N={N}")
         x0 = jr.normal(nextkey(), (N, 2))
         y0 = jr.normal(nextkey(), (N, 2))
         v0 = jnp.zeros(x0.shape)
@@ -58,6 +62,7 @@ def test_gaussian(nextkey):
             dt=N * T / (25),
         )
         xflat = jnp.ravel(xs)
+        print(f"xflat mean {jnp.mean(xflat)}, std {jnp.std(xflat)}")
         test = scipy.stats.kstest(xflat, "norm", (0.0, 1.0))
         print(test.pvalue)
         assert test.pvalue >= 0.01
