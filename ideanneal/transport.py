@@ -1,14 +1,15 @@
 import jax.numpy as jnp
 import jax
+import numpy as np
 import jax.random as jr
 import ot as pot
 import ott
-from typing import NamedTuple, Callable
+from typing import NamedTuple, Callable, Any
 import functools as ft
 
 
 class AbstractTransporter:
-    def __call__(self, t, h, pts) -> jnp.ndarray:
+    def __call__(self, t: float, h: float, pts: jax.Array) -> jax.Array:  # noqa
         """
         Compute the transport map between pts and pts reweighted,
         at time t and time t+h. Returns the relative _shift_ of each point,
@@ -64,7 +65,7 @@ class ExactTransporter(ReweightingTransporter):
         wts = jnp.ones(pts.shape[0]) / pts.shape[0]
 
         C = sqdist(pts)  # pot.utils.dist(pts, metric="sqeuclidean")
-        G = pot.emd(wts, wths, C)
+        G = pot.emd(np.array(wts), np.array(wths), np.array(C))
         return n * G @ pts - pts
 
     def _set_up(self, t, h, pts):
@@ -83,7 +84,7 @@ class ExactTransporter(ReweightingTransporter):
 
         def call(t, h, pts):
             n, wts, wths, C = set_up(t, h, pts)
-            G = pot.emd(wts, wths, C)
+            G = pot.emd(np.array(wts), np.array(wths), np.array(C))
             return marginalize(G, n, pts)
 
         return call
