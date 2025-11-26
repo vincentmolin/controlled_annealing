@@ -11,11 +11,16 @@ authors=[
 version="0.1"
 license="MIT"
 dependencies = [
-  "jax", "ott-jax", "POT", "scipy", "numpy", "pdmpx @ git+https://github.com/vincentmolin/pdmpx"
+  "jax",
+  "ott-jax",
+  "pot[backend-jax]",
+  "scipy",
+  "numpy",
+  "pdmpx @ git+https://github.com/vincentmolin/pdmpx",
 ]
-requires-python=">=3"
+requires-python=">=3.10"
 
-[project.optional-dependencies]
+[dependency-groups]
 dev = [
   "pytest", "jaxlib"
 ]
