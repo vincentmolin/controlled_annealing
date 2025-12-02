@@ -4,13 +4,6 @@ import functools as ft
 import scipy
 
 
-def make_gauss_init_sampler(x0, std):
-    def sampler(rng, n):
-        return x0 + std * jax.random.normal(rng, (n, len(x0)))
-
-    return sampler
-
-
 @ft.partial(jax.jit, static_argnums=(1,))
 def stride_min(arr, stride):
     """strided min over last axis"""

@@ -1,7 +1,7 @@
 import numpy as np
 import ideanneal
 import matplotlib as mpl
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt  # noqa
 
 
 def ground_truth(

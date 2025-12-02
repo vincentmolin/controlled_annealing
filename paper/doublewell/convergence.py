@@ -89,7 +89,8 @@ ensuredir("mpi")
 with open("mpi/jobs.pkl", "wb") as f:
     pickle.dump(jobs, f)
 
-# .... mpiexec -n 8 python mpi.py
+# %%
+# .... mpiexec -n 8 uv run python mpi.py
 
 xm = np.linspace(-3, 3, 250)
 tm = np.linspace(0, T, 251)
@@ -167,6 +168,9 @@ save_plot_data(
     os.path.join(DIR, "conv_v_cols_n_rows.dat"),
     external_save=EXTERNAL_SAVE,
 )
+
+
+# %% Interactive
 
 fig, ax = plt.subplots()
 for i, vn in enumerate(["v50", "v250", "v1000"]):

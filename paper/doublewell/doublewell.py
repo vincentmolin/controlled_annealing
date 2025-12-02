@@ -57,17 +57,34 @@ def normtime(simts):
     return simts / T
 
 
-def langevin_experiment(N=500, ITER=25, t0=0.0, dt=0.025, tend=T, rng=jr.key(123)):
-    runner = make_langevin_runner(u, beta, beta0sampler, t0, dt, tend)
+def langevin_experiment(
+    N=500,
+    ITER=25,
+    t0=0.0,
+    dt=0.025,
+    tend=T,
+    rng=jr.key(123),
+    init_sampler=beta0sampler,
+    beta=beta,
+):
+    runner = make_langevin_runner(u, beta, init_sampler, t0, dt, tend)
     ts, Xs = runner(N, ITER, rng=rng)
     return ts, Xs
 
 
 def controlled_langevin_experiment(
-    N=10, ITER=1000, t0=0.0, dt=0.025, tend=T, steps_per_v=20, rng=jr.key(127)
+    N=10,
+    ITER=1000,
+    t0=0.0,
+    dt=0.025,
+    tend=T,
+    steps_per_v=20,
+    rng=jr.key(127),
+    init_sampler=beta0sampler,
+    beta=beta,
 ):
     runner = make_controlled_langevin_runner(
-        u, beta, beta0sampler, t0, dt, tend, steps_per_v=steps_per_v
+        u, beta, init_sampler, t0, dt, tend, steps_per_v=steps_per_v
     )
     ts, Xs = runner(N, ITER, rng=rng)
     return ts, Xs
@@ -82,11 +99,13 @@ def pdsa_experiment(
     refreshment_rate=0.1,
     normalized_velocities=True,
     rng=jr.key(1245),
+    init_sampler=beta0sampler,
+    beta=beta,
 ):
     runner = make_pdsa_runner(
         u,
         beta,
-        beta0sampler,
+        init_sampler,
         t0,
         tend,
         valid_time,
@@ -107,11 +126,13 @@ def controlled_pdsa_experiment(
     refreshment_rate=0.1,
     v_interval=0.5,
     rng=jr.key(1245),
+    init_sampler=beta0sampler,
+    beta=beta,
 ):
     runner = make_controlled_pdsa_runner(
         u,
         beta,
-        beta0sampler,
+        init_sampler,
         t0,
         tend,
         valid_time,

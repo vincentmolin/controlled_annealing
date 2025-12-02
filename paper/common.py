@@ -3,7 +3,7 @@ import numpy as np
 import pdmpx
 from pdmpx.utils.func import rng_wrap
 import pickle
-from typing import Sequence, NamedTuple, List
+from typing import Sequence, NamedTuple
 from ideanneal.pdmp import ParticleCloud, ControlledPDSA
 from ideanneal.langevin import Langevin, ControlledLangevin
 import ideanneal
@@ -25,22 +25,22 @@ if os.path.exists(envpath):
 
 def save_plot_data(d, fn, external_save=False):
     """d dict of plot data"""
-    if external_save == True:
+    if external_save:
         if EXTERNAL_SAVE_PATH is None:
             raise ValueError("EXTERNAL_SAVE_PATH not set")
         fn = os.path.join(EXTERNAL_SAVE_PATH, fn)
-    elif type(external_save) == str:
+    elif type(external_save) is str:
         fn = os.path.join(external_save, fn)
 
     if os.path.dirname(fn):
         ensuredir(os.path.dirname(fn))
     ks = d.keys()
     cols = [d[k] for k in ks]
-    l = len(cols[0])
-    assert all([len(col) == l for col in cols])
+    num_rows = len(cols[0])
+    assert all([len(col) == num_rows for col in cols])
     with open(fn, "w") as f:
         f.write(" ".join(ks) + "\n")
-        rows = [" ".join([str(col[i]) for col in cols]) for i in range(l)]
+        rows = [" ".join([str(col[i]) for col in cols]) for i in range(num_rows)]
         f.write("\n".join(rows))
 
 
@@ -70,6 +70,13 @@ class Cacheman:
 
         wrapper.__name__ = fn.__name__
         return wrapper
+
+
+def make_gauss_init_sampler(x0, std):
+    def sampler(rng, n):
+        return x0 + std * jax.random.normal(rng, (n, len(x0)))
+
+    return sampler
 
 
 def run_langevin(rng, rstep, x0, t0, dt, tend):

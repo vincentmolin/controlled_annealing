@@ -2,15 +2,10 @@ import numpy as np
 import jax.numpy as jnp
 import jax
 import jax.random as jr
-import functools as ft
 import matplotlib.pyplot as plt
-import matplotlib as mpl
 import sys
-import scipy
-import os
 
 from optim import (
-    make_gauss_init_sampler,
     stride_min,
     ema,
 )
@@ -19,7 +14,7 @@ from optim import (
 sys.path.append("../")
 from common import (
     Cacheman,
-    ensuredir,
+    make_gauss_init_sampler,
     save_plot_data,
     make_langevin_runner,
     make_controlled_langevin_runner,

@@ -5,25 +5,23 @@ import os
 import pickle
 import json
 import jax.random as jr
-from doublewell import u, beta, T, beta0sampler  # pyright: ignore
+from doublewell import u, beta, T, beta0sampler  # noqa
+import hashlib
 
 sys.path.append("../")
 
-from common import (  # pyright: ignore
+from common import (  # noqa
     make_controlled_langevin_runner,
     make_controlled_pdsa_runner,
 )
 
 
 def compute(job):
-    t0 = job["kwargs"]["t0"]
-
     if job["type"] == "cle":
         runner = make_controlled_langevin_runner(
             u,
             beta,
             beta0sampler,
-            t0,
             **job["kwargs"],
             progress_bar=False,
         )
@@ -44,13 +42,14 @@ def compute(job):
 
 
 def jobid(job):
-    return hash(json.dumps(job, sort_keys=True))
+    jsonstring = json.dumps(job, sort_keys=True)
+    return hashlib.sha256(jsonstring.encode()).hexdigest()
 
 
 def work(job):
     if os.path.exists("mpi/" + job["name"] + ".id"):
         with open("mpi/" + job["name"] + ".id", "r") as f:
-            oldid = int(f.read())
+            oldid = f.read()
         if oldid == jobid(job):
             print("job already done", job)
             return
@@ -61,8 +60,8 @@ def work(job):
         with open(f"mpi/{job['name']}", "wb") as f:
             pickle.dump(wj, f)
         with open("mpi/" + job["name"] + ".id", "w") as f:
-            f.write(str(jobid(job)))
-    except:
+            f.write(jobid(job))
+    except:  # noqa
         print("failed on ", job)
     return
 

@@ -22,8 +22,13 @@ requires-python=">=3.10,<3.14"
 
 [dependency-groups]
 dev = [
-  "pytest", "jaxlib", "flake8"
+  "pytest",
+  "jaxlib",
+  "flake8",
+  "ipykernel>=7.1.0",
 ]
+
+[project.optional-dependencies]
 paper = [
   "matplotlib", "tqdm", "mpi4py"
 ]

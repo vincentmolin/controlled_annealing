@@ -18,7 +18,7 @@ sys.path.append("../")
 import common
 
 reload(common)
-from common import (
+from common import (  # noqa
     Cacheman,
     save_plot_data,
 )
@@ -90,7 +90,7 @@ save_plot_data(v_plot_data, "figs/doublewell/raw/v.dat", external_save=EXTERNAL_
 
 ### Inspection
 
-if False == True:
+if False == True:  # noqa
 
     fig, ax = plt.subplots(figsize=(3.4, 2.4))
     vax = ax.twinx()
@@ -147,3 +147,5 @@ if False == True:
         yticklabels=[],
     )
     fig.tight_layout()
+
+# %%
