@@ -124,6 +124,8 @@ ITER = 1000
 
 Hcs = []
 Xcs = []
+Hs = []
+Xs = []
 
 for x0_init in x0_inits:
     init_sampler = make_gauss_init_sampler(x0_init, std_init)
@@ -136,25 +138,28 @@ for x0_init in x0_inits:
     )
     Xcs.append(Xc)
     Hcs.append(hist.discretized(Xc, xm))
+    _, X = langevin_experiment(
+        init_sampler=init_sampler,
+        N=N * 100,
+        ITER=ITER // 100,
+        persist_as=f"lange_offset_{x0_init[0]:.1f}",
+        refresh=REFRESHALL,
+    )
+    Xs.append(X)
+    Hs.append(hist.discretized(X, xm))
 
-
-fig, ax = plt.subplots(figsize=(8, 8))
-hist.plot(ax, ts, xm, Hcs[3])
+fig, axs = plt.subplots(len(x0_inits), 2, figsize=(6, 12))
+for i in range(len(x0_inits)):
+    hist.plot(axs[i, 0], ts, xm, Hs[i])
+    hist.plot(axs[i, 1], ts, xm, Hcs[i])
 fig
-
-traj_id = 15
-traj = Xcs[3][:, traj_id * N : (traj_id + 1) * N, 0]
-plt.plot(ts, traj)
-
-Xcs[0].shape
 
 # %%
 
-
 tm = np.linspace(0, T, 251)
 xm = np.linspace(-3, 3, 250)  # histogram mesh
-
-std_init = 0.5
+REFRESHALL = True
+std_init = 0.05
 x0_inits = np.array([0.0, 1.0, 2.0, 3.0])[:, None]
 N = 5
 ITER = 1000
@@ -162,11 +167,11 @@ tend = 25.0
 beta_t0 = 1.0
 toffset = beta_inv(beta_t0)
 beta_colder = lambda t: beta(toffset + t * (1 - toffset / tend))
-plt.plot(tm, beta(tm))
-plt.plot(tm, beta_colder(tm))
 
 Hcs = []
 Xcs = []
+Hs = []
+Xs = []
 
 for x0_init in x0_inits:
     init_sampler = make_gauss_init_sampler(x0_init, std_init)
@@ -180,14 +185,27 @@ for x0_init in x0_inits:
     )
     Xcs.append(Xc)
     Hcs.append(hist.discretized(Xc, xm))
+    _, X = langevin_experiment(
+        init_sampler=init_sampler,
+        beta=beta_colder,
+        N=N * 100,
+        ITER=ITER // 100,
+        persist_as=f"lange_colder_offset_{x0_init[0]:.1f}",
+        refresh=REFRESHALL,
+    )
+    Xs.append(X)
+    Hs.append(hist.discretized(X, xm))
 
-
-fig, ax = plt.subplots(figsize=(8, 8))
-hist.plot(ax, ts, xm, Hcs[3])
+fig, axs = plt.subplots(len(x0_inits), 2, figsize=(6, 12))
+for i in range(len(x0_inits)):
+    hist.plot(axs[i, 0], ts, xm, Hs[i])
+    hist.plot(axs[i, 1], ts, xm, Hcs[i])
 fig
 
-traj_id = 15
-traj = Xcs[3][:, traj_id * N : (traj_id + 1) * N, 0]
-plt.plot(ts, traj)
+# %%
 
-Xcs[0].shape
+for i in range(4):
+    plt.plot(xm, Hs[i][:, -1])
+
+for i in range(4):
+    plt.plot(xm, Hcs[i][:, -1])
